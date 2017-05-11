@@ -1,4 +1,4 @@
-package org.janusgraph.importer.util;
+package org.janusgraph.importer.dataloader;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,6 +9,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.importer.edge.EdgeLoaderWorker;
+import org.janusgraph.importer.util.Worker;
+import org.janusgraph.importer.util.WorkerPool;
 import org.janusgraph.importer.vertex.VertexLoaderWorker;
 import org.json.JSONObject;
 
@@ -43,7 +45,7 @@ public class DataLoader {
 		JSONObject vertexMap = mapping.getJSONObject(mapToLoad);
 		Iterator<String> keysIter = vertexMap.keys();
 
-		try (WorkerPool workers = new WorkerPool(8)) {
+		try (WorkerPool workers = new WorkerPool(8,16)) {
 			while (keysIter.hasNext()) {
 				String fileName = keysIter.next();
 				Map<String, Object> propMapping = new Gson().fromJson(vertexMap.getJSONObject(fileName).toString(),

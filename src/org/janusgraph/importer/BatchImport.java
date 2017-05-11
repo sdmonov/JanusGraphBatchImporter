@@ -2,8 +2,8 @@ package org.janusgraph.importer;
 
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphFactory;
+import org.janusgraph.importer.dataloader.DataLoader;
 import org.janusgraph.importer.schema.SchemaLoader;
-import org.janusgraph.importer.util.DataLoader;
 
 public class BatchImport {
 
