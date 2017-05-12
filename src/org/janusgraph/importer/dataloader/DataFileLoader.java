@@ -13,6 +13,8 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.log4j.Logger;
 import org.janusgraph.core.JanusGraph;
+import org.janusgraph.importer.util.BatchHelper;
+import org.janusgraph.importer.util.Constants;
 import org.janusgraph.importer.util.Worker;
 import org.janusgraph.importer.util.WorkerPool;
 
@@ -51,6 +53,9 @@ public class DataFileLoader {
 
 		Reader in = new FileReader(fileName);
 		Iterator<CSVRecord> iter = CSVFormat.EXCEL.withHeader().parse(in).iterator();
-		startWorkers(iter, 50000, workers);
+//		long freeMemory = Runtime.getRuntime().freeMemory()/1024/1024;
+		// TODO Calculate targetThreadCount using the free memory and number of threads to execute
+		//Max record count per thread
+		startWorkers(iter, Constants.WORKERS_TARGET_RECORD_COUNT, workers);
 	}
 }

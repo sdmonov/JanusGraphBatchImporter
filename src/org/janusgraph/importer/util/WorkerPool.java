@@ -1,11 +1,16 @@
 package org.janusgraph.importer.util;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class WorkerPool implements AutoCloseable {
-	private ThreadPoolExecutor processor;
+	private static ExecutorService processor;
+	private List<Future<?>> futures = new ArrayList<Future<?>>();
+
 	private final long shutdownWaitMS = 10000;
 	private int maxWorkers;
 	private int numThreads;
@@ -13,20 +18,20 @@ public class WorkerPool implements AutoCloseable {
 	public WorkerPool(int numThreads, int maxWorkers) {
 		this.numThreads = numThreads;
 		this.maxWorkers = maxWorkers;
-		initializeNewProcessor(numThreads);
+	    processor=Executors.newFixedThreadPool(numThreads);
 	}
 	
-	private void initializeNewProcessor(int numThreads) {
-		processor = new ThreadPoolExecutor(numThreads, numThreads, 0L, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<Runnable>(128));
-		processor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-	}
-
 	public void submit(Runnable runnable) throws Exception {
-		while ((processor.getTaskCount()-processor.getCompletedTaskCount()) > maxWorkers) {
+		Future<?> future = processor.submit(runnable);
+		futures.add(future);
+		while (futures.size()>numThreads) {
+			for (int i=0; i<futures.size();i++) {
+				Future<?> f=futures.get(i);
+				if (f.isDone())
+					futures.remove(i);
+			}
 			Thread.sleep(1000);
 		}
-		processor.submit(runnable);
 	}
 	
 	private void closeProcessor() throws Exception {

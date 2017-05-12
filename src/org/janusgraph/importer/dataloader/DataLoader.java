@@ -45,7 +45,8 @@ public class DataLoader {
 		JSONObject vertexMap = mapping.getJSONObject(mapToLoad);
 		Iterator<String> keysIter = vertexMap.keys();
 
-		try (WorkerPool workers = new WorkerPool(8,16)) {
+		int availProcessors = Runtime.getRuntime().availableProcessors();
+		try (WorkerPool workers = new WorkerPool(availProcessors,availProcessors*2)) {
 			while (keysIter.hasNext()) {
 				String fileName = keysIter.next();
 				Map<String, Object> propMapping = new Gson().fromJson(vertexMap.getJSONObject(fileName).toString(),
