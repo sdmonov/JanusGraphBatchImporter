@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.importer.edge.EdgeLoaderWorker;
+import org.janusgraph.importer.util.Config;
 import org.janusgraph.importer.util.Worker;
 import org.janusgraph.importer.util.WorkerPool;
 import org.janusgraph.importer.vertex.VertexLoaderWorker;
@@ -27,14 +28,15 @@ public class DataLoader {
 	}
 
 	public void loadVertex(String filesDirectory, String mappingFile) throws Exception {
-		loadData(filesDirectory,mappingFile,"vertexMap", (Class) VertexLoaderWorker.class);
+		loadData(filesDirectory, mappingFile, "vertexMap", (Class) VertexLoaderWorker.class);
 	}
 
 	public void loadEdges(String filesDirectory, String mappingFile) throws Exception {
-		loadData(filesDirectory,mappingFile,"edgeMap", (Class) EdgeLoaderWorker.class);
+		loadData(filesDirectory, mappingFile, "edgeMap", (Class) EdgeLoaderWorker.class);
 	}
 
-	public void loadData(String filesDirectory, String mappingFile, String mapToLoad, Class<Worker> workerClass) throws Exception {
+	public void loadData(String filesDirectory, String mappingFile, String mapToLoad, Class<Worker> workerClass)
+			throws Exception {
 		long startTime = System.nanoTime();
 		log.info("Start loading data for " + mapToLoad);
 
@@ -45,8 +47,8 @@ public class DataLoader {
 		JSONObject vertexMap = mapping.getJSONObject(mapToLoad);
 		Iterator<String> keysIter = vertexMap.keys();
 
-		int availProcessors = Runtime.getRuntime().availableProcessors();
-		try (WorkerPool workers = new WorkerPool(availProcessors,availProcessors*2)) {
+		int availProcessors = Config.getConfig().getWorkers();
+		try (WorkerPool workers = new WorkerPool(availProcessors, availProcessors * 2)) {
 			while (keysIter.hasNext()) {
 				String fileName = keysIter.next();
 				Map<String, Object> propMapping = new Gson().fromJson(vertexMap.getJSONObject(fileName).toString(),

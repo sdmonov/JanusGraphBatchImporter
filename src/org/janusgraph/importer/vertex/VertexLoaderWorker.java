@@ -11,15 +11,19 @@ import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.JanusGraphVertex;
 import org.janusgraph.importer.util.BatchHelper;
+import org.janusgraph.importer.util.Config;
 import org.janusgraph.importer.util.Constants;
 import org.janusgraph.importer.util.Worker;
 
 public class VertexLoaderWorker extends Worker {
 	private final UUID myID = UUID.randomUUID();
+	
+	private final int COMMIT_COUNT;
 
 	private final String defaultVertexLabel;
 	private String vertexLabelFieldName;
 	private JanusGraphTransaction graphTransaction;
+	private long currentRecord;
 
 	private Logger log = Logger.getLogger(VertexLoaderWorker.class);
 
@@ -27,8 +31,11 @@ public class VertexLoaderWorker extends Worker {
 			final JanusGraph graph) {
 		super(records, propertiesMap, graph);
 
+		this.currentRecord = 0;
 		this.defaultVertexLabel = (String) propertiesMap.get(Constants.VERTEX_LABEL_MAPPING);
 		this.vertexLabelFieldName = null;
+
+		COMMIT_COUNT = Config.getConfig().getVertexRecordCommitCount();
 
 		if (propertiesMap.values().contains(Constants.VERTEX_LABEL_MAPPING)) {
 			// find the vertex
@@ -72,6 +79,13 @@ public class VertexLoaderWorker extends Worker {
 				v.property(propName, convertedValue);
 			}
 		}
+		
+		if (currentRecord % COMMIT_COUNT == 0) {
+			graphTransaction.commit();
+			graphTransaction.close();
+			graphTransaction = getGraph().newTransaction();
+		}
+		currentRecord++;
 	}
 
 	public UUID getMyID() {

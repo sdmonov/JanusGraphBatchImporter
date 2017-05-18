@@ -17,5 +17,7 @@ public class Constants {
 	public static final String VERTEX_LABEL_MAPPING = "[VertexLabel]";
 	public static final String EDGE_LABEL_MAPPING = "[EdgeLabel]";
 	
-	public static final int WORKERS_TARGET_RECORD_COUNT = 50000;
+	public static final Integer DEFAULT_WORKERS_TARGET_RECORD_COUNT = 50000;
+	public static final Integer DEFAULT_VERTEX_COMMIT_COUNT = 10000;
+	public static final Integer DEFAULT_EDGE_COMMIT_COUNT = 1000;
 }
