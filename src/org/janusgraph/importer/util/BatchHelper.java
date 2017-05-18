@@ -44,8 +44,8 @@ public class BatchHelper {
 			// dd.mm.yyyy
 			dateParser = new SimpleDateFormat("dd.mm.yyyy");
 		} else {
-			// Default use dd/mm/yyyy
-			dateParser = new SimpleDateFormat("mm/dd/yyyy");
+			// Default use MM/dd/yy
+			dateParser = new SimpleDateFormat("MM/dd/yy hh:mm");
 		}
 		
 		return dateParser.parse(inputDate);
