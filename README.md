@@ -11,6 +11,7 @@ JanusGraphBatchImporter depends on JanusGraph libraries and also commons-csv-1.4
 In order to use under Linux:
 
 Edit batch_import.sh and set JANUSGRAPH_PATH to the path where JanusGraph binaries are located.
+Edit conf/batch_import.properties file to configure the importer 
 
 Usage of batch_import.sh:
       batch_import.sh <janusgraph-config-file> <data-files-directory> <schema.json> <data-mapping.json>

@@ -27,13 +27,14 @@ public class WorkerPool implements AutoCloseable {
 		while (futures.size()>numThreads) {
 			for (int i=0; i<futures.size();i++) {
 				Future<?> f=futures.get(i);
-				if (f.isDone())
+				if (f.isDone()) {
 					futures.remove(i);
+				}
 			}
 			Thread.sleep(1000);
 		}
 	}
-	
+
 	private void closeProcessor() throws Exception {
 		processor.shutdown();
 		while (!processor.awaitTermination(shutdownWaitMS, TimeUnit.MILLISECONDS)) {

@@ -71,32 +71,6 @@ public class EdgeLoaderWorker extends Worker {
 				record.get(rightEdgeFieldName));
 
 		try {
-			node_1.hasNext();
-		} catch (Exception e) {
-			Thread.currentThread().sleep(500);
-			node_1 = traversal.V().has(leftVertexLabel, leftVertexFieldName, record.get(leftEdgeFieldName));
-			try {
-				node_1.hasNext();
-			} catch (Exception e1) {
-				Thread.currentThread().sleep(500);
-				node_1 = traversal.V().has(leftVertexLabel, leftVertexFieldName, record.get(leftEdgeFieldName));
-			}
-		}
-
-		try {
-			node_2.hasNext();
-		} catch (Exception e) {
-			Thread.currentThread().sleep(500);
-			node_2 = traversal.V().has(rightVertexLabel, rightVertexFieldName, record.get(rightEdgeFieldName));
-			try {
-				node_2.hasNext();
-			} catch (Exception e1) {
-				Thread.currentThread().sleep(500);
-				node_2 = traversal.V().has(rightVertexLabel, rightVertexFieldName, record.get(rightEdgeFieldName));
-			}
-		}
-
-		try {
 			if (node_1.hasNext() && node_2.hasNext()) {
 				Vertex v1 = node_1.next();
 				Vertex v2 = node_2.next();
@@ -124,8 +98,6 @@ public class EdgeLoaderWorker extends Worker {
 
 					// Update property only if it does not exist already
 					if (!edge.properties(propName).hasNext()) {
-						// TODO Convert properties between data types. e.g.
-						// Date
 						Object convertedValue = BatchHelper.convertPropertyValue(value,
 								graphTransaction.getPropertyKey(propName).dataType());
 						edge.property(propName, convertedValue);
@@ -133,8 +105,7 @@ public class EdgeLoaderWorker extends Worker {
 				}
 			}
 		} catch (Exception e) {
-			log.error(e);
-			// System.exit(0);
+			throw e;
 		}
 		if (currentRecord % Constants.DEFAULT_EDGE_COMMIT_COUNT == 0) {
 			graphTransaction.commit();
@@ -167,7 +138,8 @@ public class EdgeLoaderWorker extends Worker {
 		});
 		graphTransaction.commit();
 		graphTransaction.close();
-
+		
+		graphTransaction = null;
 		log.info("Finished thread " + myID);
 	}
 }
