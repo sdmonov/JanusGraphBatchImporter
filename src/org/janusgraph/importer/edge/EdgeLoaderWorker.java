@@ -12,27 +12,29 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.importer.util.BatchHelper;
+import org.janusgraph.importer.util.Config;
 import org.janusgraph.importer.util.Constants;
 import org.janusgraph.importer.util.Worker;
 
 public class EdgeLoaderWorker extends Worker {
 	private final UUID myID = UUID.randomUUID();
-
+	private final int COMMIT_COUNT;
 	private JanusGraphTransaction graphTransaction;
 	private long currentRecord;
 	private final String defaultEdgeLabel;
 	private String edgeLabelFieldName;
 
 	private Logger log = Logger.getLogger(EdgeLoaderWorker.class);
+    private GraphTraversalSource traversal;
 
 	public EdgeLoaderWorker(final Iterator<Map<String, String>> records, final Map<String, Object> propertiesMap,
 			final JanusGraph graph) {
 		super(records, propertiesMap, graph);
-
+		
 		this.currentRecord = 0;
 		this.defaultEdgeLabel = (String) propertiesMap.get(Constants.EDGE_LABEL_MAPPING);
 		this.edgeLabelFieldName = null;
-
+		COMMIT_COUNT = Config.getConfig().getEdgeRecordCommitCount();
 		if (propertiesMap.values().contains(Constants.EDGE_LABEL_MAPPING)) {
 			for (String propName : propertiesMap.keySet()) {
 				if (Constants.EDGE_LABEL_MAPPING.equals(propertiesMap.get(propName))) {
@@ -63,7 +65,6 @@ public class EdgeLoaderWorker extends Worker {
 		String rightVertexLabel = rightVertex.substring(0, rightVertex.indexOf('.'));
 		String rightVertexFieldName = rightVertex.substring(rightVertex.indexOf('.') + 1);
 
-		GraphTraversalSource traversal = getGraph().traversal();
 
 		Iterator<Vertex> node_1 = traversal.V().has(leftVertexLabel, leftVertexFieldName,
 				record.get(leftEdgeFieldName));
@@ -103,14 +104,17 @@ public class EdgeLoaderWorker extends Worker {
 						edge.property(propName, convertedValue);
 					}
 				}
+			} else {
+                log.error("Vertex1 or Vertex2 not found.");
 			}
 		} catch (Exception e) {
 			throw e;
 		}
-		if (currentRecord % Constants.DEFAULT_EDGE_COMMIT_COUNT == 0) {
+		if (currentRecord % COMMIT_COUNT == 0) {
 			graphTransaction.commit();
 			graphTransaction.close();
 			graphTransaction = getGraph().newTransaction();
+			traversal = graphTransaction.traversal();
 		}
 		currentRecord++;
 	}
@@ -125,6 +129,7 @@ public class EdgeLoaderWorker extends Worker {
 
 		// Start new graph transaction
 		graphTransaction = getGraph().newTransaction();
+		this.traversal = graphTransaction.traversal();
 		getRecords().forEachRemaining(new Consumer<Map<String, String>>() {
 			@Override
 			public void accept(Map<String, String> record) {
