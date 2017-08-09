@@ -11,6 +11,7 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
+import org.janusgraph.core.SchemaViolationException;
 import org.janusgraph.importer.util.BatchHelper;
 import org.janusgraph.importer.util.Config;
 import org.janusgraph.importer.util.Constants;
@@ -107,9 +108,11 @@ public class EdgeLoaderWorker extends Worker {
 			} else {
                 log.error("Vertex1 or Vertex2 not found.");
 			}
-		} catch (Exception e) {
+		} catch (SchemaViolationException e) {
+            log.warn(e.getMessage());
+        } catch (Exception e) {
 			throw e;
-		}
+		} 
 		if (currentRecord % COMMIT_COUNT == 0) {
 			graphTransaction.commit();
 			graphTransaction.close();

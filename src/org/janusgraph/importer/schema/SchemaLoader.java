@@ -16,6 +16,7 @@ import org.apache.tinkerpop.shaded.jackson.databind.ObjectMapper;
 import org.janusgraph.core.Cardinality;
 import org.janusgraph.core.EdgeLabel;
 import org.janusgraph.core.JanusGraph;
+import org.janusgraph.core.Multiplicity;
 import org.janusgraph.core.PropertyKey;
 import org.janusgraph.core.attribute.Geoshape;
 import org.janusgraph.core.schema.JanusGraphManagement;
@@ -128,7 +129,7 @@ public class SchemaLoader {
                     log.info("edge: " + name + " exists");
                 } else {
                     try {
-                        mgmt.makeEdgeLabel(name).make();
+                        mgmt.makeEdgeLabel(name).multiplicity(Multiplicity.valueOf(edge.get("multiplicity").asText())).make();
                         log.info("edge: " + name + " creation is done");
                     } catch (Exception e) {
                         log.error("cant't create edge: " + name + ", "  + e.getMessage());
