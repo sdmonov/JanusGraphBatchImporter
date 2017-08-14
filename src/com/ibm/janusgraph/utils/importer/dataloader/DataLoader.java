@@ -1,4 +1,4 @@
-package org.janusgraph.importer.dataloader;
+package com.ibm.janusgraph.utils.importer.dataloader;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -8,15 +8,15 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.janusgraph.core.JanusGraph;
-import org.janusgraph.importer.edge.EdgeLoaderWorker;
-import org.janusgraph.importer.util.Config;
-import org.janusgraph.importer.util.Worker;
-import org.janusgraph.importer.util.WorkerPool;
-import org.janusgraph.importer.vertex.VertexLoaderWorker;
 import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ibm.janusgraph.utils.importer.edge.EdgeLoaderWorker;
+import com.ibm.janusgraph.utils.importer.util.Config;
+import com.ibm.janusgraph.utils.importer.util.Worker;
+import com.ibm.janusgraph.utils.importer.util.WorkerPool;
+import com.ibm.janusgraph.utils.importer.vertex.VertexLoaderWorker;
 
 public class DataLoader {
 	private JanusGraph graph;

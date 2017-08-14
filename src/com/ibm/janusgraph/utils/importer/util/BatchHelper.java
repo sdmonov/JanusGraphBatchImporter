@@ -1,4 +1,4 @@
-package org.janusgraph.importer.util;
+package com.ibm.janusgraph.utils.importer.util;
 
 import java.io.File;
 import java.io.FileReader;

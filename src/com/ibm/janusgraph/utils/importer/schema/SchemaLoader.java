@@ -1,4 +1,4 @@
-package org.janusgraph.importer.schema;
+package com.ibm.janusgraph.utils.importer.schema;
 
 import java.io.File;
 import java.util.Date;

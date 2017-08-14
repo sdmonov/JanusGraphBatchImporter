@@ -1,4 +1,4 @@
-package org.janusgraph.importer.edge;
+package com.ibm.janusgraph.utils.importer.edge;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -12,10 +12,11 @@ import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.SchemaViolationException;
-import org.janusgraph.importer.util.BatchHelper;
-import org.janusgraph.importer.util.Config;
-import org.janusgraph.importer.util.Constants;
-import org.janusgraph.importer.util.Worker;
+
+import com.ibm.janusgraph.utils.importer.util.BatchHelper;
+import com.ibm.janusgraph.utils.importer.util.Config;
+import com.ibm.janusgraph.utils.importer.util.Constants;
+import com.ibm.janusgraph.utils.importer.util.Worker;
 
 public class EdgeLoaderWorker extends Worker {
 	private final UUID myID = UUID.randomUUID();

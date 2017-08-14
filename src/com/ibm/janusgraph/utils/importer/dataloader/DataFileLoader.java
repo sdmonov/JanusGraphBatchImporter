@@ -1,4 +1,4 @@
-package org.janusgraph.importer.dataloader;
+package com.ibm.janusgraph.utils.importer.dataloader;
 
 import java.io.FileReader;
 import java.io.Reader;
@@ -13,11 +13,12 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.log4j.Logger;
 import org.janusgraph.core.JanusGraph;
-import org.janusgraph.importer.util.BatchHelper;
-import org.janusgraph.importer.util.Config;
-import org.janusgraph.importer.util.Constants;
-import org.janusgraph.importer.util.Worker;
-import org.janusgraph.importer.util.WorkerPool;
+
+import com.ibm.janusgraph.utils.importer.util.BatchHelper;
+import com.ibm.janusgraph.utils.importer.util.Config;
+import com.ibm.janusgraph.utils.importer.util.Constants;
+import com.ibm.janusgraph.utils.importer.util.Worker;
+import com.ibm.janusgraph.utils.importer.util.WorkerPool;
 
 public class DataFileLoader {
 	private JanusGraph graph;
