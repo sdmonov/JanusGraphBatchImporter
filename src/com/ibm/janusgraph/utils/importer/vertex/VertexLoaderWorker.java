@@ -1,4 +1,4 @@
-package org.janusgraph.importer.vertex;
+package com.ibm.janusgraph.utils.importer.vertex;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -10,10 +10,11 @@ import org.apache.log4j.Logger;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
 import org.janusgraph.core.JanusGraphVertex;
-import org.janusgraph.importer.util.BatchHelper;
-import org.janusgraph.importer.util.Config;
-import org.janusgraph.importer.util.Constants;
-import org.janusgraph.importer.util.Worker;
+
+import com.ibm.janusgraph.utils.importer.util.BatchHelper;
+import com.ibm.janusgraph.utils.importer.util.Config;
+import com.ibm.janusgraph.utils.importer.util.Constants;
+import com.ibm.janusgraph.utils.importer.util.Worker;
 
 public class VertexLoaderWorker extends Worker {
 	private final UUID myID = UUID.randomUUID();

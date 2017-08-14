@@ -1,4 +1,4 @@
-package org.janusgraph.importer.util;
+package com.ibm.janusgraph.utils.importer.util;
 
 import java.util.ArrayList;
 import java.util.List;

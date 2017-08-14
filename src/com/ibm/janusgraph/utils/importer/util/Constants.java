@@ -1,4 +1,4 @@
-package org.janusgraph.importer.util;
+package com.ibm.janusgraph.utils.importer.util;
 
 public class Constants {
 	public static final String INTERMEDIARIES_KEY_NAME = "Intermediaries";

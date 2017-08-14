@@ -1,4 +1,4 @@
-package org.janusgraph.importer.edge;
+package com.ibm.janusgraph.utils.importer.edge;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -11,10 +11,12 @@ import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 import org.janusgraph.core.JanusGraph;
 import org.janusgraph.core.JanusGraphTransaction;
-import org.janusgraph.importer.util.BatchHelper;
-import org.janusgraph.importer.util.Config;
-import org.janusgraph.importer.util.Constants;
-import org.janusgraph.importer.util.Worker;
+import org.janusgraph.core.SchemaViolationException;
+
+import com.ibm.janusgraph.utils.importer.util.BatchHelper;
+import com.ibm.janusgraph.utils.importer.util.Config;
+import com.ibm.janusgraph.utils.importer.util.Constants;
+import com.ibm.janusgraph.utils.importer.util.Worker;
 
 public class EdgeLoaderWorker extends Worker {
 	private final UUID myID = UUID.randomUUID();
@@ -107,9 +109,11 @@ public class EdgeLoaderWorker extends Worker {
 			} else {
                 log.error("Vertex1 or Vertex2 not found.");
 			}
-		} catch (Exception e) {
+		} catch (SchemaViolationException e) {
+            log.warn(e.getMessage());
+        } catch (Exception e) {
 			throw e;
-		}
+		} 
 		if (currentRecord % COMMIT_COUNT == 0) {
 			graphTransaction.commit();
 			graphTransaction.close();
